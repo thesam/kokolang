@@ -47,6 +47,7 @@ public class JavaEmittingExprListener extends ExprBaseListener {
 	@Override
 	public void enterStringLiteral(ExprParser.StringLiteralContext ctx) {
 		super.enterStringLiteral(ctx);
+		output += String.format("System.out.println(%s);",ctx.getText());
 	}
 
 	@Override
