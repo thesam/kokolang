@@ -15,6 +15,6 @@ public class Main {
 		ExprParser parser = new ExprParser( tokens );
 		ParseTree tree = parser.prog();
 		ParseTreeWalker walker = new ParseTreeWalker();
-		walker.walk( new MyExprListener(), tree );
+		walker.walk( new JavaEmittingExprListener(), tree );
     }
 }
