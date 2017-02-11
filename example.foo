@@ -1,2 +1,2 @@
-"Hello, world!"
-"Hellooo!"
+*x = "Hello, world!"
+print x

@@ -45,15 +45,22 @@ public class JavaEmittingExprListener extends ExprBaseListener {
 	}
 
 	@Override
-	public void enterStringLiteral(ExprParser.StringLiteralContext ctx) {
-		super.enterStringLiteral(ctx);
-		output += String.format("System.out.println(%s);",ctx.getText());
+	public void enterAssignment(ExprParser.AssignmentContext ctx) {
+		super.enterAssignment(ctx);
 	}
 
 	@Override
-	public void exitStringLiteral(ExprParser.StringLiteralContext ctx) {
-		super.exitStringLiteral(ctx);
-//		String text = ctx.getText().substring(1,ctx.getText().length()-1);
-//		System.out.println(text);
+	public void exitAssignment(ExprParser.AssignmentContext ctx) {
+		super.exitAssignment(ctx);
+	}
+
+	@Override
+	public void enterPrintStatement(ExprParser.PrintStatementContext ctx) {
+		super.enterPrintStatement(ctx);
+	}
+
+	@Override
+	public void exitPrintStatement(ExprParser.PrintStatementContext ctx) {
+		super.exitPrintStatement(ctx);
 	}
 }
