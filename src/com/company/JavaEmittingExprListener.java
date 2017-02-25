@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class JavaEmittingExprListener extends ExprBaseListener {
 
@@ -70,5 +71,20 @@ public class JavaEmittingExprListener extends ExprBaseListener {
 	@Override
 	public void exitPrintStatement(ExprParser.PrintStatementContext ctx) {
 		super.exitPrintStatement(ctx);
+	}
+
+	@Override
+	public void enterExternalFunction(ExprParser.ExternalFunctionContext ctx) {
+		super.enterExternalFunction(ctx);
+		output += ctx.IMPORTED_IDENTIFIER();
+		output += "(";
+		output += ctx.arg().stream().map(argContext -> argContext.getText()).collect(Collectors.joining(","));
+		output += ");";
+		output += "\n";
+	}
+
+	@Override
+	public void exitExternalFunction(ExprParser.ExternalFunctionContext ctx) {
+		super.exitExternalFunction(ctx);
 	}
 }

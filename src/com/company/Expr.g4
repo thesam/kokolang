@@ -1,12 +1,15 @@
 grammar Expr;
 prog:	(expr NEWLINE)* ;
-expr: assignment | printStatement ;
+expr: assignment | printStatement | externalFunction;
 assignment: ASTERISK IDENTIFIER WS EQUAL WS stringLiteral ;
 printStatement : 'print ' IDENTIFIER ;
 stringLiteral: STRING ;
+externalFunction: IMPORTED_IDENTIFIER arg+;
+arg: IDENTIFIER | stringLiteral ;
 STRING : ["] .*? ["] ;
 NEWLINE : [\r\n]+ ;
 ASTERISK : '*' ;
 IDENTIFIER : [a-z]+ ;
+IMPORTED_IDENTIFIER: [A-Za-z\\.]+ ;
 EQUAL : '=' ;
-WS : [' ']* ;
+WS : [ ]* ;
