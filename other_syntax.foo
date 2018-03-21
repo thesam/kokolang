@@ -1,0 +1,15 @@
+fizzbuzz(int a):int
+	if a % 3
+		ret "fizz"
+	if a % 5
+		ret "buzz"
+	ret a
+	
+
+main
+	*a = 1 + 2 + 3
+	*b = a
+	println b
+	*fizzed = [0,1,2,3,4,5].map(&fizzbuzz)
+	println fizzed
+
