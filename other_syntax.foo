@@ -4,7 +4,7 @@ fizzbuzz(int a) int
 	if a % 5
 		ret "buzz"
 	ret a
-	
+
 
 main void
 	*a = 1
