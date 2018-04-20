@@ -12,9 +12,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class JavaEmittingExprListener {
-//	extends
-//} ExprBaseListener {
+public class JavaEmittingExprListener extends ExprBaseListener {
 //
 //	String output = "";
 //
