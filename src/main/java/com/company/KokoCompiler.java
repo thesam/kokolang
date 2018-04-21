@@ -1,5 +1,7 @@
 package com.company;
 
+import com.generated.ExprLexer;
+import com.generated.ExprParser;
 import org.antlr.v4.runtime.ANTLRFileStream;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
@@ -10,12 +12,13 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
-import com.generated.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 public class KokoCompiler {
     public Class compile(String input) {
         try {
-        ExprLexer lexer = new ExprLexer(new ANTLRFileStream("example.foo"));
+        com.generated.ExprLexer lexer = new ExprLexer(new ANTLRFileStream("example.foo"));
         CommonTokenStream tokens = new CommonTokenStream( lexer );
         ExprParser parser = new ExprParser( tokens );
         ParseTree tree = parser.prog();
@@ -35,6 +38,8 @@ public class KokoCompiler {
             // Load in the class; MyClass.class should be located in
             // the directory file:/c:/myclasses/com/mycompany
             Class cls = cl.loadClass("Foo");
+            Files.delete(Paths.get("Foo.java"));
+            Files.delete(Paths.get("Foo.class"));
             return cls;
         } catch (MalformedURLException e) {
             throw new RuntimeException(e);
