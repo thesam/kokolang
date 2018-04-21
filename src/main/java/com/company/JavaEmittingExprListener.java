@@ -19,6 +19,7 @@ public class JavaEmittingExprListener extends ExprBaseListener {
 	public void enterProg(ExprParser.ProgContext ctx) {
 		super.enterProg(ctx);
 		output += "public class Foo {\n";
+		output += "static String x;\n";
 		output += "public static void main(String[] args) {\n";
 
 	}
@@ -51,7 +52,7 @@ public class JavaEmittingExprListener extends ExprBaseListener {
 		super.enterAssignment(ctx);
 		String variableName = ctx.getChild(1).getText();
 		String value = ctx.getChild(5).getText();
-		output += "String " + variableName + " = " + value + ";\n";
+		output += "Foo." + variableName + " = " + value + ";\n";
 	}
 
 	@Override
