@@ -2,7 +2,7 @@ package com.company;
 
 import com.generated.ExprLexer;
 import com.generated.ExprParser;
-import org.antlr.v4.runtime.ANTLRFileStream;
+import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
@@ -18,7 +18,7 @@ import java.nio.file.Paths;
 public class KokoCompiler {
     public Class compile(String input) {
         try {
-        com.generated.ExprLexer lexer = new ExprLexer(new ANTLRFileStream("example.foo"));
+        com.generated.ExprLexer lexer = new ExprLexer(new ANTLRInputStream(input));
         CommonTokenStream tokens = new CommonTokenStream( lexer );
         ExprParser parser = new ExprParser( tokens );
         ParseTree tree = parser.prog();
