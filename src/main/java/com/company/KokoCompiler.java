@@ -1,7 +1,7 @@
 package com.company;
 
-import com.generated.ExprLexer;
-import com.generated.ExprParser;
+import com.generated.KokoLexer;
+import com.generated.KokoParser;
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
@@ -18,12 +18,12 @@ import java.nio.file.Paths;
 public class KokoCompiler {
     public Class compile(String input) {
         try {
-        com.generated.ExprLexer lexer = new ExprLexer(new ANTLRInputStream(input));
+        KokoLexer lexer = new KokoLexer(new ANTLRInputStream(input));
         CommonTokenStream tokens = new CommonTokenStream( lexer );
-        ExprParser parser = new ExprParser( tokens );
+        KokoParser parser = new KokoParser( tokens );
         ParseTree tree = parser.prog();
         ParseTreeWalker walker = new ParseTreeWalker();
-        walker.walk( new JavaEmittingExprListener(), tree );
+        walker.walk( new JavaEmittingKokoListener(), tree );
 
         // Create a File object on the root of the directory containing the class file
         File file = new File(".");

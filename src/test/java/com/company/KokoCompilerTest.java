@@ -26,19 +26,4 @@ public class KokoCompilerTest {
         assertEquals("myfunc",methods.get(0).getName());
     }
 
-    @Test
-    public void canAssignStringToVariable() throws Exception {
-        Class clazz = new KokoCompiler().compile("*x = \"5\"");
-        Method[] methods = clazz.getDeclaredMethods();
-        for (Method method : methods) {
-            if (method.getName().equals("main")) {
-                method.invoke(null, new Object[]{new String[]{}});
-            }
-        }
-        Field field = clazz.getDeclaredField("x");
-        field.setAccessible(true);
-        Object value = field.get(null);
-        assertEquals(value,"5");
-    }
-
 }
