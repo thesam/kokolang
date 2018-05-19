@@ -2,9 +2,7 @@ package com.company;
 
 import org.junit.Test;
 
-import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -14,16 +12,25 @@ public class KokoCompilerTest {
 
     @Test
     public void shouldGenerateClassfile() throws Exception {
-        Class clazz = new KokoCompiler().compile("");
+        Class clazz = compile("");
         assertNotNull(clazz);
     }
 
     @Test
     public void shouldExportFunction() {
-        Class clazz = new KokoCompiler().compile("myfunc void");
+        Class clazz = compile("myfunc void");
         List<Method> methods = Arrays.asList(clazz.getDeclaredMethods());
         assertEquals(1,methods.size());
         assertEquals("myfunc",methods.get(0).getName());
+    }
+
+    private Class compile(String input) {
+        return new KokoCompiler().compile(input);
+    }
+
+    @Test
+    public void shouldGenerateFunctionBody() {
+        compile("myfunc int" + "\n" + "\tret 5");
     }
 
 }
