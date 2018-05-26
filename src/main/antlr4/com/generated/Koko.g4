@@ -7,8 +7,8 @@ functionBody: TAB returnStatment ;
 returnStatment: RETURN SPACE INT_LITERAL ;
 
 SPACE: ' ' ;
+RETURN: 'ret' ;
 INT_LITERAL: [0-9]+ ;
 IDENTIFIER: [a-z]+ ;
-RETURN: 'ret' ;
-TAB: [\t] | [ ][ ][ ][ ] ;
-NEWLINE: [\n] ;
+TAB: '\t'  ;
+NEWLINE: '\n' ;
