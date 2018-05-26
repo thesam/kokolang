@@ -8,8 +8,8 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.stream.Collectors;
 import com.generated.*;
+import org.antlr.v4.runtime.tree.TerminalNode;
 
 public class JavaEmittingKokoListener extends KokoBaseListener {
 
@@ -84,4 +84,31 @@ public class JavaEmittingKokoListener extends KokoBaseListener {
 //	public void exitExternalFunction(ExprParser.ExternalFunctionContext ctx) {
 //		super.exitExternalFunction(ctx);
 //	}
+
+
+	@Override
+	public void enterFunctionBody(KokoParser.FunctionBodyContext ctx) {
+		super.enterFunctionBody(ctx);
+		output += "{";
+	}
+
+	@Override
+	public void exitFunctionBody(KokoParser.FunctionBodyContext ctx) {
+		super.exitFunctionBody(ctx);
+		output += "}";
+	}
+
+	@Override
+	public void enterFunctionHeader(KokoParser.FunctionHeaderContext ctx) {
+		super.enterFunctionHeader(ctx);
+		TerminalNode id = ctx.IDENTIFIER(0);
+		TerminalNode returnType = ctx.IDENTIFIER(1);
+		output += "public " + returnType + " " + id + "()";
+	}
+
+	@Override
+	public void enterReturnStatment(KokoParser.ReturnStatmentContext ctx) {
+		super.enterReturnStatment(ctx);
+		output += "return " + ctx.INT_LITERAL() +";";
+	}
 }
