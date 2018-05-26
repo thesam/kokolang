@@ -103,7 +103,7 @@ public class JavaEmittingKokoListener extends KokoBaseListener {
 		super.enterFunctionHeader(ctx);
 		TerminalNode id = ctx.IDENTIFIER(0);
 		TerminalNode returnType = ctx.IDENTIFIER(1);
-		output += "public " + returnType + " " + id + "()";
+		output += "public static " + returnType + " " + id + "()";
 	}
 
 	@Override
