@@ -95,7 +95,7 @@ public class JavaEmittingKokoListener extends KokoBaseListener {
 	@Override
 	public void exitFunctionBody(KokoParser.FunctionBodyContext ctx) {
 		super.exitFunctionBody(ctx);
-		output += "}";
+		output += "}\n";
 	}
 
 	@Override
@@ -109,6 +109,24 @@ public class JavaEmittingKokoListener extends KokoBaseListener {
 	@Override
 	public void enterReturnStatment(KokoParser.ReturnStatmentContext ctx) {
 		super.enterReturnStatment(ctx);
-		output += "return " + ctx.INT_LITERAL() +";";
+		output += "return ";
+	}
+
+	@Override
+	public void exitReturnStatment(KokoParser.ReturnStatmentContext ctx) {
+		super.exitReturnStatment(ctx);
+		output += ";";
+	}
+
+	@Override
+	public void enterFunctionCall(KokoParser.FunctionCallContext ctx) {
+		super.enterFunctionCall(ctx);
+		output += ctx.IDENTIFIER() + "()";
+	}
+
+	@Override
+	public void enterIntLiteral(KokoParser.IntLiteralContext ctx) {
+		super.enterIntLiteral(ctx);
+		output += ctx.INT_LITERAL();
 	}
 }
