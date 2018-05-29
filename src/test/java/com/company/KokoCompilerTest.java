@@ -13,13 +13,13 @@ public class KokoCompilerTest {
 
     @Test
     public void shouldGenerateClassfile() throws Exception {
-        Class clazz = compile("");
+        Class clazz = compileSuccess("");
         assertNotNull(clazz);
     }
 
     @Test
     public void shouldExportFunctionWithBody() throws InvocationTargetException, IllegalAccessException {
-        Class clazz = compile("myfunc int\n\tret 0");
+        Class clazz = compileSuccess("myfunc int\n\tret 0");
         //TODO: Create instance of clazz?
         List<Method> methods = Arrays.asList(clazz.getDeclaredMethods());
         assertEquals(1,methods.size());
@@ -30,13 +30,24 @@ public class KokoCompilerTest {
 
     @Test
     public void canCallFunction() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
-        Class clazz = compile("myfunc int\n\tret 0\n\nmyfunc2 int\n\tret myfunc()");
+        Class clazz = compileSuccess("myfunc int\n\tret 0\n\nmyfunc2 int\n\tret myfunc()");
         Method method = clazz.getDeclaredMethod("myfunc2");
         Object result = method.invoke(null);
         assertEquals(0,result);
     }
 
-    private Class compile(String input) {
-        return new KokoCompiler().compile(input);
+    @Test
+    public void canNotCallFunctionThatDoesNotExist() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+        List<String> errors = compileError("myfunc2 int\n\tret myfuncmissing()");
+        assertEquals(1,errors.size());
+        //Method method = clazz.getDeclaredMethod("myfunc2");
+        //Object result = method.invoke(null);
+        //assertEquals(0,result);
     }
+
+    private Class compileSuccess(String input) {
+        return new KokoCompiler().compile(input).compiledClass().get();
+    }
+
+    private List<String> compileError(String input) { return new KokoCompiler().compile(input).errors(); }
 }
