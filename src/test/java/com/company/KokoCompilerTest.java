@@ -40,6 +40,7 @@ public class KokoCompilerTest {
     public void canNotCallFunctionThatDoesNotExist() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
         List<String> errors = compileError("myfunc2 int\n\tret myfuncmissing()");
         assertEquals(1,errors.size());
+        assertTrue(errors.get(0).contains("myfuncmissing"));
         //Method method = clazz.getDeclaredMethod("myfunc2");
         //Object result = method.invoke(null);
         //assertEquals(0,result);
