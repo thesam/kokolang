@@ -1,6 +1,6 @@
 grammar Koko;
 
-prog: expr+ ;
+prog: expr* ;
 expr: function ;
 function: functionHeader NEWLINE functionBody NEWLINE* ;
 functionHeader: IDENTIFIER SPACE IDENTIFIER ;
