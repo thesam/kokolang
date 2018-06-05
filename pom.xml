@@ -52,6 +52,8 @@
                 <artifactId>antlr4-maven-plugin</artifactId>
                 <version>4.3</version>
                 <configuration>
+                    <listener>true</listener>
+                    <visitor>true</visitor>
                     <arguments>
                         <argument>-package</argument>
                         <argument>com.generated</argument>
