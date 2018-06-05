@@ -7,13 +7,18 @@ import javax.tools.ToolProvider;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
+
+import com.company.support.Context;
 import com.generated.*;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
 public class JavaEmittingKokoListener extends KokoBaseListener {
 
 	String output = "";
+	List<String> errors = new ArrayList<>();
 
 	@Override
 	public void enterProg(KokoParser.ProgContext ctx) {
@@ -121,7 +126,12 @@ public class JavaEmittingKokoListener extends KokoBaseListener {
 	@Override
 	public void enterFunctionCall(KokoParser.FunctionCallContext ctx) {
 		super.enterFunctionCall(ctx);
-		output += ctx.IDENTIFIER() + "()";
+		String functionName = ctx.IDENTIFIER().getText();
+		if (Context.current.exists(functionName)) {
+			output += ctx.IDENTIFIER() + "()";
+		} else {
+			errors.add("Undefined function: " + functionName);
+		}
 	}
 
 	@Override

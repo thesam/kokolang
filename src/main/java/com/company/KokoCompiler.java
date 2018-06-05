@@ -24,8 +24,12 @@ public class KokoCompiler {
         KokoParser parser = new KokoParser( tokens );
         ParseTree tree = parser.prog();
         ParseTreeWalker walker = new ParseTreeWalker();
-        //TODO: Check symbols
-        walker.walk( new JavaEmittingKokoListener(), tree );
+        walker.walk( new ContextListener(), tree );
+        JavaEmittingKokoListener kokoListener = new JavaEmittingKokoListener();
+        walker.walk(kokoListener, tree );
+        if (kokoListener.errors.size() > 0) {
+            return new CompilerResult(null,kokoListener.errors);
+        }
 
         // Create a File object on the root of the directory containing the class file
         File file = new File(".");
