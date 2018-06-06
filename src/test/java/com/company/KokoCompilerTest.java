@@ -41,9 +41,14 @@ public class KokoCompilerTest {
         List<String> errors = compileError("myfunc2 int\n\tret myfuncmissing()");
         assertEquals(1,errors.size());
         assertTrue(errors.get(0).contains("myfuncmissing"));
-        //Method method = clazz.getDeclaredMethod("myfunc2");
-        //Object result = method.invoke(null);
-        //assertEquals(0,result);
+    }
+
+    @Test
+    public void canAssignVariable() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+        Class clazz = compileSuccess("myfunc int\n\tint x = 5\n\tret x");
+        Method method = clazz.getDeclaredMethod("myfunc");
+        Object result = method.invoke(null);
+        assertEquals(5,result);
     }
 
     private Class compileSuccess(String input) {

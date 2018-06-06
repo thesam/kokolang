@@ -106,9 +106,9 @@ public class JavaEmittingKokoListener extends KokoBaseListener {
 	@Override
 	public void enterFunctionHeader(KokoParser.FunctionHeaderContext ctx) {
 		super.enterFunctionHeader(ctx);
-		TerminalNode id = ctx.IDENTIFIER(0);
-		TerminalNode returnType = ctx.IDENTIFIER(1);
-		output += "public static " + returnType + " " + id + "()";
+		TerminalNode id = ctx.IDENTIFIER();
+		TerminalNode returnType = ctx.INT_TYPE();
+		output += "public static " + "Object" + " " + id + "()";
 	}
 
 	@Override
@@ -138,5 +138,17 @@ public class JavaEmittingKokoListener extends KokoBaseListener {
 	public void enterIntLiteral(KokoParser.IntLiteralContext ctx) {
 		super.enterIntLiteral(ctx);
 		output += ctx.INT_LITERAL();
+	}
+
+	@Override
+	public void enterIntDeclaration(KokoParser.IntDeclarationContext ctx) {
+		super.enterIntDeclaration(ctx);
+		output += "Object " + ctx.IDENTIFIER() + " = " + ctx.INT_LITERAL() + ";";
+	}
+
+	@Override
+	public void enterIdentifier(KokoParser.IdentifierContext ctx) {
+		super.enterIdentifier(ctx);
+		output += ctx.IDENTIFIER();
 	}
 }
