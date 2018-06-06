@@ -24,8 +24,6 @@ public class JavaEmittingKokoListener extends KokoBaseListener {
 	public void enterProg(KokoParser.ProgContext ctx) {
 		super.enterProg(ctx);
 		output += "public class Foo {\n";
-		//output += "static String x;\n";
-		//output += "public static void main(String[] args) {\n";
 
 	}
 
@@ -50,46 +48,6 @@ public class JavaEmittingKokoListener extends KokoBaseListener {
 		Boolean compilerResult = compiler.getTask(null, fileManager, null, null, null, compilationUnits1).call();
 		System.out.println(compilerResult);
 	}
-//
-//	@Override
-//	public void enterAssignment(ExprParser.AssignmentContext ctx) {
-//		super.enterAssignment(ctx);
-//		String variableName = ctx.getChild(1).getText();
-//		String value = ctx.getChild(5).getText();
-//		output += "Foo." + variableName + " = " + value + ";\n";
-//	}
-//
-//	@Override
-//	public void exitAssignment(ExprParser.AssignmentContext ctx) {
-//		super.exitAssignment(ctx);
-//	}
-//
-//	@Override
-//	public void enterPrintStatement(ExprParser.PrintStatementContext ctx) {
-//		super.enterPrintStatement(ctx);
-//		output += "System.out.println(" + ctx.getChild(1).getText() +");\n";
-//	}
-//
-//	@Override
-//	public void exitPrintStatement(ExprParser.PrintStatementContext ctx) {
-//		super.exitPrintStatement(ctx);
-//	}
-//
-//	@Override
-//	public void enterExternalFunction(ExprParser.ExternalFunctionContext ctx) {
-//		super.enterExternalFunction(ctx);
-//		output += ctx.IMPORTED_IDENTIFIER();
-//		output += "(";
-//		output += ctx.arg().stream().map(argContext -> argContext.getText()).collect(Collectors.joining(","));
-//		output += ");";
-//		output += "\n";
-//	}
-//
-//	@Override
-//	public void exitExternalFunction(ExprParser.ExternalFunctionContext ctx) {
-//		super.exitExternalFunction(ctx);
-//	}
-
 
 	@Override
 	public void enterFunctionBody(KokoParser.FunctionBodyContext ctx) {
@@ -127,17 +85,9 @@ public class JavaEmittingKokoListener extends KokoBaseListener {
 	public void enterFunctionCall(KokoParser.FunctionCallContext ctx) {
 		super.enterFunctionCall(ctx);
 		String functionName = ctx.IDENTIFIER().getText();
-		if (Context.current.exists(functionName)) {
-			output += ctx.IDENTIFIER() + "()";
-		} else {
+		if (!Context.current.exists(functionName)) {
 			errors.add("Undefined function: " + functionName);
 		}
-	}
-
-	@Override
-	public void enterIntLiteral(KokoParser.IntLiteralContext ctx) {
-		super.enterIntLiteral(ctx);
-		output += ctx.INT_LITERAL();
 	}
 
 	@Override
@@ -147,8 +97,7 @@ public class JavaEmittingKokoListener extends KokoBaseListener {
 	}
 
 	@Override
-	public void enterIdentifier(KokoParser.IdentifierContext ctx) {
-		super.enterIdentifier(ctx);
-		output += ctx.IDENTIFIER();
+	public void enterReturnValue(KokoParser.ReturnValueContext ctx) {
+		output += ctx.getText();
 	}
 }
