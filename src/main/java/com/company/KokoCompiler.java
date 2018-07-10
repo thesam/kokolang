@@ -1,5 +1,6 @@
 package com.company;
 
+import com.company.support.Context;
 import com.company.support.ErrorHandler;
 import com.generated.KokoLexer;
 import com.generated.KokoListener;
@@ -24,6 +25,7 @@ public class KokoCompiler {
     public CompilerResult compile(String input) {
         try {
             ErrorHandler.errors = new ArrayList<>();
+            Context.reset();
         KokoLexer lexer = new KokoLexer(new ANTLRInputStream(input));
         CommonTokenStream tokens = new CommonTokenStream( lexer );
         KokoParser parser = new KokoParser( tokens );

@@ -7,6 +7,15 @@ import com.generated.KokoParser;
 
 public class SemanticChecker extends KokoBaseListener {
 
+    @Override
+    public void enterFunctionBody(KokoParser.FunctionBodyContext ctx) {
+        Context.current.enterNewBlock();
+    }
+
+    @Override
+    public void exitFunctionBody(KokoParser.FunctionBodyContext ctx) {
+        Context.current.exitBlock();
+    }
 
     @Override
     public void enterFunctionCall(KokoParser.FunctionCallContext ctx) {

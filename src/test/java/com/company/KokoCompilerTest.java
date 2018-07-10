@@ -62,6 +62,13 @@ public class KokoCompilerTest {
         assertError(errors,"x");
     }
 
+    @Test
+    public void errorUndefinedVariableWrongScope() throws Exception {
+        List<String> errors = fixtureError("undefined_variable_wrong_scope");
+        assertError(errors,"x");
+    }
+
+
     private Class compileSuccess(String input) {
         CompilerResult result = new KokoCompiler().compile(input);
         return result.compiledClass().orElseThrow(() -> new RuntimeException("Compiler errors: " + result.errors()));

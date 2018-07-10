@@ -12,6 +12,16 @@ public class ContextListener extends KokoBaseListener {
     }
 
     @Override
+    public void enterFunctionBody(KokoParser.FunctionBodyContext ctx) {
+        Context.current.enterNewBlock();
+    }
+
+    @Override
+    public void exitFunctionBody(KokoParser.FunctionBodyContext ctx) {
+        Context.current.exitBlock();
+    }
+
+    @Override
     public void enterIntDeclaration(KokoParser.IntDeclarationContext ctx) {
         Context.current.add(ctx.IDENTIFIER().getText());
     }

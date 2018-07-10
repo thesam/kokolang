@@ -1,0 +1,6 @@
+myfunc int
+    ret x
+
+otherfunc int
+    int x = 5
+    ret x

@@ -11,13 +11,22 @@ public class Context {
     List<Context> children = new ArrayList<>();
     List<String> identifiers = new ArrayList<>();
 
+    public static void reset() {
+        current = new Context(null);
+    }
+
     private Context(Context parent) {
         this.parent = parent;
     }
 
-    public void enterBlock() {
+    public void enterNewBlock() {
         current = new Context(this);
         children.add(current);
+    }
+
+    public void enterNextBlock() {
+        //TODO: Must enter next existing block in the correct order
+        // Maybe save iteration index in each context?
     }
 
     public void exitBlock() {
@@ -34,7 +43,7 @@ public class Context {
         boolean found = identifiers.contains(id);
         while (!found && context != null) {
             found = identifiers.contains(id);
-            context = this.parent;
+            context = context.parent;
         }
         return found;
     }
