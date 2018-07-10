@@ -17,6 +17,6 @@ public class Main {
 		ExprParser parser = new ExprParser( tokens );
 		ParseTree tree = parser.prog();
 		ParseTreeWalker walker = new ParseTreeWalker();
-		walker.walk( new JavaEmittingKokoListener(), tree );
+		walker.walk( new JavaGenerator(), tree );
     }
 }

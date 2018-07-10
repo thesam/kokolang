@@ -7,18 +7,15 @@ import javax.tools.ToolProvider;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 import com.company.support.Context;
 import com.generated.*;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
-public class JavaEmittingKokoListener extends KokoBaseListener {
+public class JavaGenerator extends KokoBaseListener {
 
 	String output = "";
-	List<String> errors = new ArrayList<>();
 
 	@Override
 	public void enterProg(KokoParser.ProgContext ctx) {
@@ -75,14 +72,6 @@ public class JavaEmittingKokoListener extends KokoBaseListener {
 	}
 
 	@Override
-	public void enterFunctionCall(KokoParser.FunctionCallContext ctx) {
-		String functionName = ctx.IDENTIFIER().getText();
-		if (!Context.current.exists(functionName)) {
-			errors.add("Undefined function: " + functionName);
-		}
-	}
-
-	@Override
 	public void enterIntDeclaration(KokoParser.IntDeclarationContext ctx) {
 		output += "Object " + ctx.IDENTIFIER() + " = " + ctx.INT_LITERAL() + ";";
 	}
@@ -92,11 +81,4 @@ public class JavaEmittingKokoListener extends KokoBaseListener {
 		output += ctx.getText();
 	}
 
-	@Override
-	public void enterIdentifier(KokoParser.IdentifierContext ctx) {
-		String identifierName = ctx.IDENTIFIER().getText();
-		if (!Context.current.exists(identifierName)) {
-			errors.add("Undefined identifier: " + identifierName);
-		}
-	}
 }

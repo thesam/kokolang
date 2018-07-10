@@ -1,6 +1,8 @@
 package com.company;
 
+import com.company.support.ErrorHandler;
 import com.generated.KokoLexer;
+import com.generated.KokoListener;
 import com.generated.KokoParser;
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CommonTokenStream;
@@ -15,20 +17,28 @@ import java.net.URLClassLoader;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class KokoCompiler {
     public CompilerResult compile(String input) {
         try {
+            ErrorHandler.errors = new ArrayList<>();
         KokoLexer lexer = new KokoLexer(new ANTLRInputStream(input));
         CommonTokenStream tokens = new CommonTokenStream( lexer );
         KokoParser parser = new KokoParser( tokens );
         ParseTree tree = parser.prog();
         ParseTreeWalker walker = new ParseTreeWalker();
-        walker.walk( new ContextListener(), tree );
-        JavaEmittingKokoListener kokoListener = new JavaEmittingKokoListener();
-        walker.walk(kokoListener, tree );
-        if (kokoListener.errors.size() > 0) {
-            return new CompilerResult(null,kokoListener.errors);
+        List<KokoListener> listeners = Arrays.asList(
+                new ContextListener(),
+                new SemanticChecker(),
+                new JavaGenerator()
+        );
+        for (KokoListener listener : listeners) {
+            walker.walk(listener,tree);
+            if (ErrorHandler.errors.size() > 0) {
+                return new CompilerResult(null,ErrorHandler.errors);
+            }
         }
 
         // Create a File object on the root of the directory containing the class file
