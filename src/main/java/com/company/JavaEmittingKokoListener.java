@@ -22,14 +22,12 @@ public class JavaEmittingKokoListener extends KokoBaseListener {
 
 	@Override
 	public void enterProg(KokoParser.ProgContext ctx) {
-		super.enterProg(ctx);
 		output += "public class Foo {\n";
 
 	}
 
 	@Override
 	public void exitProg(KokoParser.ProgContext ctx) {
-		super.exitProg(ctx);
 		output += "}\n";
 
 		System.out.println(output);
@@ -51,19 +49,16 @@ public class JavaEmittingKokoListener extends KokoBaseListener {
 
 	@Override
 	public void enterFunctionBody(KokoParser.FunctionBodyContext ctx) {
-		super.enterFunctionBody(ctx);
 		output += "{";
 	}
 
 	@Override
 	public void exitFunctionBody(KokoParser.FunctionBodyContext ctx) {
-		super.exitFunctionBody(ctx);
 		output += "}\n";
 	}
 
 	@Override
 	public void enterFunctionHeader(KokoParser.FunctionHeaderContext ctx) {
-		super.enterFunctionHeader(ctx);
 		TerminalNode id = ctx.IDENTIFIER();
 		TerminalNode returnType = ctx.INT_TYPE();
 		output += "public static " + "Object" + " " + id + "()";
@@ -71,19 +66,16 @@ public class JavaEmittingKokoListener extends KokoBaseListener {
 
 	@Override
 	public void enterReturnStatment(KokoParser.ReturnStatmentContext ctx) {
-		super.enterReturnStatment(ctx);
 		output += "return ";
 	}
 
 	@Override
 	public void exitReturnStatment(KokoParser.ReturnStatmentContext ctx) {
-		super.exitReturnStatment(ctx);
 		output += ";";
 	}
 
 	@Override
 	public void enterFunctionCall(KokoParser.FunctionCallContext ctx) {
-		super.enterFunctionCall(ctx);
 		String functionName = ctx.IDENTIFIER().getText();
 		if (!Context.current.exists(functionName)) {
 			errors.add("Undefined function: " + functionName);
@@ -92,12 +84,19 @@ public class JavaEmittingKokoListener extends KokoBaseListener {
 
 	@Override
 	public void enterIntDeclaration(KokoParser.IntDeclarationContext ctx) {
-		super.enterIntDeclaration(ctx);
 		output += "Object " + ctx.IDENTIFIER() + " = " + ctx.INT_LITERAL() + ";";
 	}
 
 	@Override
 	public void enterReturnValue(KokoParser.ReturnValueContext ctx) {
 		output += ctx.getText();
+	}
+
+	@Override
+	public void enterIdentifier(KokoParser.IdentifierContext ctx) {
+		String identifierName = ctx.IDENTIFIER().getText();
+		if (!Context.current.exists(identifierName)) {
+			errors.add("Undefined identifier: " + identifierName);
+		}
 	}
 }

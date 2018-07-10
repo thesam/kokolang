@@ -8,7 +8,11 @@ public class ContextListener extends KokoBaseListener {
 
     @Override
     public void enterFunctionHeader(KokoParser.FunctionHeaderContext ctx) {
-        super.enterFunctionHeader(ctx);
+        Context.current.add(ctx.IDENTIFIER().getText());
+    }
+
+    @Override
+    public void enterIntDeclaration(KokoParser.IntDeclarationContext ctx) {
         Context.current.add(ctx.IDENTIFIER().getText());
     }
 }
