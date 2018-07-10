@@ -2,8 +2,12 @@ package com.company;
 
 import org.junit.Test;
 
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
 
@@ -18,23 +22,26 @@ public class KokoCompilerTest {
     }
 
     @Test
-    public void shouldExportFunctionWithBody() throws InvocationTargetException, IllegalAccessException {
+    public void shouldExportFunctionWithBody() throws Exception {
         Class clazz = compileSuccess("myfunc int\n\tret 0");
         //TODO: Create instance of clazz?
-        List<Method> methods = Arrays.asList(clazz.getDeclaredMethods());
-        assertEquals(1,methods.size());
-        assertEquals("myfunc",methods.get(0).getName());
-        Object result = methods.get(0).invoke(null);
+        Method method = getMethod(clazz, "myfunc");
+        Object result = method.invoke(null);
         assertEquals(0,result);
     }
 
     @Test
-    public void canCallFunction() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
-        Class clazz = compileSuccess("myfunc int\n\tret 0\n\nmyfunc2 int\n\tret myfunc()");
-        Method method = clazz.getDeclaredMethod("myfunc2");
+    public void canCallFunction() throws Exception {
+        Class clazz = fixtureSuccess("call_function");
+        Method method = getMethod(clazz, "myfunc2");
         Object result = method.invoke(null);
         assertEquals(0,result);
     }
+
+    private Method getMethod(Class clazz, String functionName) throws NoSuchMethodException {
+        return clazz.getDeclaredMethod(functionName);
+    }
+
 
     @Test
     public void canNotCallFunctionThatDoesNotExist() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
@@ -46,7 +53,7 @@ public class KokoCompilerTest {
     @Test
     public void canAssignVariable() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
         Class clazz = compileSuccess("myfunc int\n\tint x = 5\n\tret x");
-        Method method = clazz.getDeclaredMethod("myfunc");
+        Method method = getMethod(clazz, "myfunc");
         Object result = method.invoke(null);
         assertEquals(5,result);
     }
@@ -56,4 +63,11 @@ public class KokoCompilerTest {
     }
 
     private List<String> compileError(String input) { return new KokoCompiler().compile(input).errors(); }
+
+    private Class fixtureSuccess(String fixtureName) throws IOException {
+        Path path = Paths.get("src","test","resources",fixtureName + ".koko");
+        byte[] bytes = Files.readAllBytes(path);
+        String input = new String(bytes);
+        return compileSuccess(input);
+    }
 }
