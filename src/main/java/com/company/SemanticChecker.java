@@ -9,7 +9,7 @@ public class SemanticChecker extends KokoBaseListener {
 
     @Override
     public void enterFunctionBody(KokoParser.FunctionBodyContext ctx) {
-        Context.current.enterNewBlock();
+        Context.current.enterNextBlock();
     }
 
     @Override

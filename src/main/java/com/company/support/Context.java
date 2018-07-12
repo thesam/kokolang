@@ -10,6 +10,7 @@ public class Context {
     private Context parent;
     List<Context> children = new ArrayList<>();
     List<String> identifiers = new ArrayList<>();
+    int currentIndex = 0;
 
     public static void reset() {
         current = new Context(null);
@@ -25,6 +26,7 @@ public class Context {
     }
 
     public void enterNextBlock() {
+        current = children.get(currentIndex++);
         //TODO: Must enter next existing block in the correct order
         // Maybe save iteration index in each context?
     }
