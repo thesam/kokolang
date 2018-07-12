@@ -4,3 +4,5 @@ myfunc int
 otherfunc int
     int x = 5
     ret x
+
+ERR:Undefined identifier: x

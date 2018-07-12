@@ -31,10 +31,7 @@ public class KokoCompilerTest {
 
     @Test
     public void canCallFunction() throws Exception {
-        Class clazz = fixtureSuccess("call_function");
-        Method method = getMethod(clazz, "myfunc2");
-        Object result = method.invoke(null);
-        assertEquals(0,result);
+        runFixture("call_function");
     }
 
     private Method getMethod(Class clazz, String functionName) throws NoSuchMethodException {
@@ -58,14 +55,12 @@ public class KokoCompilerTest {
 
     @Test
     public void errorUndefinedVariable() throws Exception {
-        List<String> errors = fixtureError("undefined_variable");
-        assertError(errors,"x");
+        runFixture("undefined_variable");
     }
 
     @Test
     public void errorUndefinedVariableWrongScope() throws Exception {
-        List<String> errors = fixtureError("undefined_variable_wrong_scope");
-        assertError(errors,"x");
+        runFixture("undefined_variable_wrong_scope");
     }
 
 
@@ -76,18 +71,27 @@ public class KokoCompilerTest {
 
     private List<String> compileError(String input) { return new KokoCompiler().compile(input).errors(); }
 
-    private Class fixtureSuccess(String fixtureName) throws IOException {
+    private void runFixture(String fixtureName) throws Exception {
         Path path = Paths.get("src","test","resources",fixtureName + ".koko");
         byte[] bytes = Files.readAllBytes(path);
         String input = new String(bytes);
-        return compileSuccess(input);
-    }
-
-    private List<String> fixtureError(String fixtureName) throws IOException {
-        Path path = Paths.get("src","test","resources",fixtureName + ".koko");
-        byte[] bytes = Files.readAllBytes(path);
-        String input = new String(bytes);
-        return compileError(input);
+        String[] lines;
+        boolean successExpected = true;
+        if (input.contains("RET:")) {
+            lines = input.split("RET:");
+        } else if (input.contains("ERR:")) {
+            lines = input.split("ERR:");
+            successExpected = false;
+        } else {
+            throw new RuntimeException("Malformed test");
+        }
+        CompilerResult result = new KokoCompiler().compile(lines[0]);
+        if (successExpected) {
+            Method main = getMethod(result.compiledClass().get(), "main");
+            assertEquals(lines[1], main.invoke(null).toString());
+        } else {
+            assertEquals(lines[1], result.errors().get(0));
+        }
     }
 
     private void assertError(List<String> errors, String partialMessage) {

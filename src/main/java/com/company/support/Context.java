@@ -40,9 +40,9 @@ public class Context {
 
     public boolean exists(String id) {
         Context context = this;
-        boolean found = identifiers.contains(id);
+        boolean found = context.identifiers.contains(id);
         while (!found && context != null) {
-            found = identifiers.contains(id);
+            found = context.identifiers.contains(id);
             context = context.parent;
         }
         return found;
