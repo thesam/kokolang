@@ -1,79 +1,47 @@
 package com.company;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 
-import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.junit.Assert.*;
 
+@RunWith(Parameterized.class)
 public class KokoCompilerTest {
 
-    @Test
-    public void shouldGenerateClassfile() throws Exception {
-        Class clazz = compileSuccess("");
-        assertNotNull(clazz);
+    private Path fixture;
+
+    @Parameterized.Parameters(name="{0}")
+    public static Collection fixtures() throws Exception {
+        List<Path> fixturePaths = Files.find(Paths.get("src", "test", "resources"), Integer.MAX_VALUE, (path, fileAttrs) -> {
+            return path.toString().endsWith(".kokot");
+        }).collect(Collectors.toList());
+        return fixturePaths;
+    }
+
+    public KokoCompilerTest(Path fixture) {
+        this.fixture = fixture;
     }
 
     @Test
-    public void shouldExportFunctionWithBody() throws Exception {
-        Class clazz = compileSuccess("myfunc int\n\tret 0");
-        //TODO: Create instance of clazz?
-        Method method = getMethod(clazz, "myfunc");
-        Object result = method.invoke(null);
-        assertEquals(0,result);
-    }
-
-    @Test
-    public void canCallFunction() throws Exception {
-        runFixture("call_function");
+    public void runFixture() throws Exception {
+        runFixture(this.fixture);
     }
 
     private Method getMethod(Class clazz, String functionName) throws NoSuchMethodException {
         return clazz.getDeclaredMethod(functionName);
     }
 
-
-    @Test
-    public void canNotCallFunctionThatDoesNotExist() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
-        List<String> errors = compileError("myfunc2 int\n\tret myfuncmissing()");
-        assertError(errors,"myfuncmissing");
-    }
-
-    @Test
-    public void canAssignVariable() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
-        Class clazz = compileSuccess("myfunc int\n\tint x = 5\n\tret x");
-        Method method = getMethod(clazz, "myfunc");
-        Object result = method.invoke(null);
-        assertEquals(5,result);
-    }
-
-    @Test
-    public void errorUndefinedVariable() throws Exception {
-        runFixture("undefined_variable");
-    }
-
-    @Test
-    public void errorUndefinedVariableWrongScope() throws Exception {
-        runFixture("undefined_variable_wrong_scope");
-    }
-
-
-    private Class compileSuccess(String input) {
-        CompilerResult result = new KokoCompiler().compile(input);
-        return result.compiledClass().orElseThrow(() -> new RuntimeException("Compiler errors: " + result.errors()));
-    }
-
-    private List<String> compileError(String input) { return new KokoCompiler().compile(input).errors(); }
-
-    private void runFixture(String fixtureName) throws Exception {
-        Path path = Paths.get("src","test","resources",fixtureName + ".koko");
-        byte[] bytes = Files.readAllBytes(path);
+    private void runFixture(Path fixture) throws Exception {
+        byte[] bytes = Files.readAllBytes(fixture);
         String input = new String(bytes);
         String[] lines;
         boolean successExpected = true;
@@ -92,10 +60,5 @@ public class KokoCompilerTest {
         } else {
             assertEquals(lines[1], result.errors().get(0));
         }
-    }
-
-    private void assertError(List<String> errors, String partialMessage) {
-        assertEquals(1,errors.size());
-        assertTrue(errors.get(0).contains(partialMessage));
     }
 }

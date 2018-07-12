@@ -1,0 +1,4 @@
+main int
+    ret 0
+
+RET:0

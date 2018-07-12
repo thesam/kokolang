@@ -1,0 +1,4 @@
+main int
+    ret missingfunction()
+
+ERR:Undefined function: missingfunction
