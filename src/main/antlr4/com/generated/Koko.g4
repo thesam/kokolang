@@ -1,7 +1,7 @@
 grammar Koko;
 
 prog: expr* ;
-expr: function | comment ;
+expr: function ;
 function: functionHeader NEWLINE functionBody NEWLINE* ;
 functionHeader: IDENTIFIER SPACE INT_TYPE ;
 functionBody: (TAB intDeclaration NEWLINE)? TAB returnStatment ;
@@ -12,8 +12,8 @@ intDeclaration: INT_TYPE SPACE IDENTIFIER SPACE EQUAL SPACE INT_LITERAL ;
 addStatement: INT_LITERAL SPACE PLUS SPACE INT_LITERAL ;
 intLiteral: INT_LITERAL ;
 identifier: IDENTIFIER ;
-comment: COMMENT ;
 
+COMMENT: '#' TAB* ~( '\n' )* '\n' -> skip;
 SPACE: ' ' ;
 RETURN: 'ret' ;
 INT_TYPE: 'int' ;
@@ -25,4 +25,3 @@ TAB: '\t' | '    ' ;
 NEWLINE: '\n' ;
 EQUAL: '=' ;
 PLUS: '+' ;
-COMMENT: '#' ~( '\n' )*;
