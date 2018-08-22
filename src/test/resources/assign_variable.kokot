@@ -2,4 +2,4 @@ main int
     int x = 5
     ret x
 
-RET:5
+#RET:5

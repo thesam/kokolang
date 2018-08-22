@@ -1,4 +1,4 @@
 myfunc int
     ret x
 
-ERR:Undefined identifier: x
+#ERR:Undefined identifier: x

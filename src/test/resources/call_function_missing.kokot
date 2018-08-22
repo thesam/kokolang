@@ -1,4 +1,4 @@
 main int
     ret missingfunction()
 
-ERR:Undefined function: missingfunction
+#ERR:Undefined function: missingfunction

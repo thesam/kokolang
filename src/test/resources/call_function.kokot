@@ -4,4 +4,4 @@ myfunc int
 main int
 	ret myfunc()
 
-RET:0
+#RET:0
