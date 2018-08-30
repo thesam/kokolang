@@ -80,4 +80,13 @@ public class JavaGenerator extends KokoBaseListener {
 		output += ctx.getText();
 	}
 
+	@Override
+	public void enterIfStatement(KokoParser.IfStatementContext ctx) {
+		output += "if ((int)" + ctx.identifier().getText() + ">" + ctx.intLiteral().getText() + ") {";
+	}
+
+	@Override
+	public void exitIfStatement(KokoParser.IfStatementContext ctx) {
+		output += "}";
+	}
 }

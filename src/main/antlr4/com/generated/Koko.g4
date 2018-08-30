@@ -4,7 +4,8 @@ prog: expr* ;
 expr: function ;
 function: functionHeader NEWLINE functionBody NEWLINE* ;
 functionHeader: IDENTIFIER SPACE INT_TYPE ;
-functionBody: (TAB intDeclaration NEWLINE)? TAB returnStatment ;
+functionBody: (TAB (intDeclaration|ifStatement) NEWLINE)* TAB returnStatment ;
+ifStatement: IF SPACE identifier SPACE GT SPACE intLiteral NEWLINE TAB TAB returnStatment ;
 returnStatment: RETURN SPACE returnValue ;
 returnValue: intLiteral | functionCall | identifier | addStatement ;
 functionCall: IDENTIFIER LEFT_PAREN RIGHT_PAREN ;
@@ -15,6 +16,8 @@ identifier: IDENTIFIER ;
 
 COMMENT: '#' TAB* ~( '\n' )* '\n' -> skip;
 SPACE: ' ' ;
+IF: 'if' ;
+GT: '>' ;
 RETURN: 'ret' ;
 INT_TYPE: 'int' ;
 INT_LITERAL: [0-9]+ ;
