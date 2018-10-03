@@ -5,7 +5,12 @@ import com.company.support.ErrorHandler;
 import com.generated.KokoBaseListener;
 import com.generated.KokoParser;
 
+import java.util.Arrays;
+import java.util.List;
+
 public class SemanticChecker extends KokoBaseListener {
+
+    private List<String> BUILTINS = Arrays.asList("len");
 
     @Override
     public void enterFunctionBody(KokoParser.FunctionBodyContext ctx) {
@@ -20,7 +25,7 @@ public class SemanticChecker extends KokoBaseListener {
     @Override
     public void enterFunctionCall(KokoParser.FunctionCallContext ctx) {
         String functionName = ctx.IDENTIFIER().getText();
-        if (!Context.current.exists(functionName)) {
+        if (!Context.current.exists(functionName) && !BUILTINS.contains(functionName)) {
             ErrorHandler.errors.add("Undefined function: " + functionName);
         }
     }

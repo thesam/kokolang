@@ -55,7 +55,7 @@ public class KokoCompilerTest {
         }
         CompilerResult result = new KokoCompiler().compile(lines[0]);
         if (successExpected) {
-            Method main = getMethod(result.compiledClass().get(), "main");
+            Method main = getMethod(result.compiledClass().orElseThrow(() -> new RuntimeException("Unexpected compiler error: " + result.errors().get(0))), "main");
             assertEquals(lines[1], main.invoke(null).toString());
         } else {
             assertEquals(lines[1], result.errors().get(0));

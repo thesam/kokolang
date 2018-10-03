@@ -62,12 +62,12 @@ public class JavaGenerator extends KokoBaseListener {
 
 	@Override
 	public void enterReturnStatment(KokoParser.ReturnStatmentContext ctx) {
-		output += "return ";
+		output += "{return ";
 	}
 
 	@Override
 	public void exitReturnStatment(KokoParser.ReturnStatmentContext ctx) {
-		output += ";";
+		output += ";}";
 	}
 
 	@Override
@@ -76,17 +76,41 @@ public class JavaGenerator extends KokoBaseListener {
 	}
 
 	@Override
-	public void enterReturnValue(KokoParser.ReturnValueContext ctx) {
-		output += ctx.getText();
+	public void enterIfStatement(KokoParser.IfStatementContext ctx) {
+		output += "if ";
 	}
 
 	@Override
-	public void enterIfStatement(KokoParser.IfStatementContext ctx) {
-		output += "if ((int)" + ctx.identifier().getText() + ">" + ctx.intLiteral().getText() + ") {";
+	public void enterBoolExpr(KokoParser.BoolExprContext ctx) {
+		output +="((int)" + ctx.identifier().getText() + ">" + ctx.intLiteral().getText() + ")";
 	}
 
 	@Override
 	public void exitIfStatement(KokoParser.IfStatementContext ctx) {
 		output += "}";
+	}
+
+	@Override
+	public void enterFunctionCall(KokoParser.FunctionCallContext ctx) {
+		if (ctx.IDENTIFIER().equals("len")) {
+			output += "Collections.emptyList().size()";
+		} else {
+			output += ctx.IDENTIFIER() + "()";
+		}
+	}
+
+	@Override
+	public void enterAddStatement(KokoParser.AddStatementContext ctx) {
+		output += ctx.getText();
+	}
+
+	@Override
+	public void enterIntLiteral(KokoParser.IntLiteralContext ctx) {
+		output += ctx.getText();
+	}
+
+	@Override
+	public void enterIdentifier(KokoParser.IdentifierContext ctx) {
+		output += ctx.getText();
 	}
 }
