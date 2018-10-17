@@ -82,7 +82,7 @@ public class JavaGenerator extends KokoBaseListener {
 
 	@Override
 	public void enterBoolExpr(KokoParser.BoolExprContext ctx) {
-		output +="((int)" + ctx.identifier().getText() + ">" + ctx.intLiteral().getText() + ")";
+		output +="((int)" + ctx.IDENTIFIER().getText() + ">" + ctx.INT_LITERAL().getText() + ")";
 	}
 
 	@Override
@@ -112,5 +112,16 @@ public class JavaGenerator extends KokoBaseListener {
 	@Override
 	public void enterIdentifier(KokoParser.IdentifierContext ctx) {
 		output += ctx.getText();
+	}
+
+	@Override
+	public void enterIfExpr(KokoParser.IfExprContext ctx) {
+		super.enterIfExpr(ctx);
+	}
+
+	@Override
+	public void exitIfExpr(KokoParser.IfExprContext ctx) {
+		output += "{";
+		super.exitIfExpr(ctx);
 	}
 }
