@@ -18,6 +18,7 @@ public class JavaGenerator extends KokoBaseListener {
 
 	@Override
 	public void enterProg(KokoParser.ProgContext ctx) {
+		output += "import java.util.Collections;\n\n";
 		output += "public class Foo {\n";
 
 	}
@@ -92,7 +93,7 @@ public class JavaGenerator extends KokoBaseListener {
 
 	@Override
 	public void enterFunctionCall(KokoParser.FunctionCallContext ctx) {
-		if (ctx.IDENTIFIER().equals("len")) {
+		if (ctx.IDENTIFIER().getText().equals("len")) {
 			output += "Collections.emptyList().size()";
 		} else {
 			output += ctx.IDENTIFIER() + "()";
