@@ -25,4 +25,9 @@ public class ContextListener extends KokoBaseListener {
     public void enterIntDeclaration(KokoParser.IntDeclarationContext ctx) {
         Context.current.add(ctx.IDENTIFIER().getText());
     }
+
+    @Override
+    public void enterArgDeclaration(KokoParser.ArgDeclarationContext ctx) {
+        Context.current.add(ctx.IDENTIFIER().getText());
+    }
 }

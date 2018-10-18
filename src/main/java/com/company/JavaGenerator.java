@@ -58,7 +58,7 @@ public class JavaGenerator extends KokoBaseListener {
 	public void enterFunctionHeader(KokoParser.FunctionHeaderContext ctx) {
 		TerminalNode id = ctx.IDENTIFIER();
 		TerminalNode returnType = ctx.INT_TYPE();
-		output += "public static " + "Object" + " " + id + "()";
+		output += "public static " + "Object" + " " + id;
 	}
 
 	@Override
@@ -94,9 +94,9 @@ public class JavaGenerator extends KokoBaseListener {
 	@Override
 	public void enterFunctionCall(KokoParser.FunctionCallContext ctx) {
 		if (ctx.IDENTIFIER().getText().equals("len")) {
-			output += "Collections.emptyList().size()";
+			output += "Collections.emptyList().size";
 		} else {
-			output += ctx.IDENTIFIER() + "()";
+			output += ctx.IDENTIFIER();
 		}
 	}
 
@@ -124,5 +124,30 @@ public class JavaGenerator extends KokoBaseListener {
 	public void exitIfExpr(KokoParser.IfExprContext ctx) {
 		output += "{";
 		super.exitIfExpr(ctx);
+	}
+
+	@Override
+	public void enterFunctionCallArgs(KokoParser.FunctionCallArgsContext ctx) {
+		output += "(";
+	}
+
+	@Override
+	public void exitFunctionCallArgs(KokoParser.FunctionCallArgsContext ctx) {
+		output += ")";
+	}
+
+	@Override
+	public void enterArgDeclaration(KokoParser.ArgDeclarationContext ctx) {
+		output += ctx.getText();
+	}
+
+	@Override
+	public void enterArgList(KokoParser.ArgListContext ctx) {
+		output += "(";
+	}
+
+	@Override
+	public void exitArgList(KokoParser.ArgListContext ctx) {
+		output += ")";
 	}
 }
