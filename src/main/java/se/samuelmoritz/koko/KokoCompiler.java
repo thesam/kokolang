@@ -34,7 +34,8 @@ public class KokoCompiler {
             KokoParser parser = new KokoParser(tokens);
             ParseTree tree = parser.prog();
             ParseTreeWalker walker = new ParseTreeWalker();
-            JavaGenerator javaGenerator = new JavaGenerator();
+            boolean hasFunctionDeclaration = !((KokoParser.ProgContext) tree).functionDeclaration().isEmpty();
+            JavaGenerator javaGenerator = new JavaGenerator(hasFunctionDeclaration);
             List<KokoListener> listeners = Arrays.asList(
                     new ContextListener(),
                     new SemanticChecker(),
