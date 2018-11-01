@@ -1,9 +1,11 @@
-package com.company;
+package se.samuelmoritz.koko;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
 import java.lang.reflect.Method;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -12,15 +14,15 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 @RunWith(Parameterized.class)
 public class KokoCompilerTest {
 
     private Path fixture;
 
-    @Parameterized.Parameters(name="{0}")
-    public static Collection fixtures() throws Exception {
+    @Parameterized.Parameters(name = "{0}")
+    public static Collection<Path> fixtures() throws Exception {
         List<Path> fixturePaths = Files.find(Paths.get("src", "test", "resources"), Integer.MAX_VALUE, (path, fileAttrs) -> {
             return path.toString().endsWith(".kokot");
         }).collect(Collectors.toList());
@@ -36,29 +38,21 @@ public class KokoCompilerTest {
         runFixture(this.fixture);
     }
 
-    private Method getMethod(Class clazz, String functionName) throws NoSuchMethodException {
-        return clazz.getDeclaredMethod(functionName);
+    private Method getMainMethod(Class clazz) throws NoSuchMethodException {
+        return clazz.getDeclaredMethod("main", String[].class);
     }
 
     private void runFixture(Path fixture) throws Exception {
         byte[] bytes = Files.readAllBytes(fixture);
         String input = new String(bytes);
-        String[] lines;
-        boolean successExpected = true;
-        if (input.contains("RET:")) {
-            lines = input.split("RET:");
-        } else if (input.contains("ERR:")) {
-            lines = input.split("ERR:");
-            successExpected = false;
-        } else {
-            throw new RuntimeException("Malformed test");
-        }
+        String[] lines = input.split("#STDOUT:\n");
+
         CompilerResult result = new KokoCompiler().compile(lines[0]);
-        if (successExpected) {
-            Method main = getMethod(result.compiledClass().orElseThrow(() -> new RuntimeException("Unexpected compiler error: " + result.errors().get(0))), "main");
-            assertEquals(lines[1], main.invoke(null).toString());
-        } else {
-            assertEquals(lines[1], result.errors().get(0));
-        }
+        Method main = getMainMethod(result.compiledClass().orElseThrow(() -> new RuntimeException("Unexpected compiler error: " + result.errors().get(0))));
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(baos));
+        String[] args = null;
+        main.invoke(null, (Object) args);
+        assertEquals(lines[1], baos.toString());
     }
 }

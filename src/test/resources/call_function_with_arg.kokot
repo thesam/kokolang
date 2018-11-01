@@ -1,7 +1,0 @@
-myfunc(int a) int
-	ret a
-
-main int
-	ret myfunc(1)
-
-#RET:1

@@ -56,7 +56,7 @@
                     <visitor>true</visitor>
                     <arguments>
                         <argument>-package</argument>
-                        <argument>com.generated</argument>
+                        <argument>se.samuelmoritz.koko</argument>
                     </arguments>
                 </configuration>
                 <executions>

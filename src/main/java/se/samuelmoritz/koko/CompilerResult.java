@@ -1,4 +1,4 @@
-package com.company;
+package se.samuelmoritz.koko;
 
 import java.util.List;
 import java.util.Optional;

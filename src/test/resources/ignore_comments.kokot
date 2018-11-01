@@ -1,5 +1,0 @@
-main int
-#    ret 1
-    ret 0
-
-#RET:0

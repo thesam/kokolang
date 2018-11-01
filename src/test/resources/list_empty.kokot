@@ -1,4 +1,0 @@
-main int
-    ret len([])
-
-#RET:0

@@ -1,4 +1,4 @@
-package com.company.support;
+package se.samuelmoritz.koko.support;
 
 import java.util.ArrayList;
 import java.util.List;
