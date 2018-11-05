@@ -45,7 +45,7 @@ public class KokoCompilerTest {
     private void runFixture(Path fixture) throws Exception {
         byte[] bytes = Files.readAllBytes(fixture);
         String input = new String(bytes);
-        String[] lines = input.split("#STDOUT:\n");
+        String[] lines = input.split("#STDOUT:(\n|\r\n)");
 
         CompilerResult result = new KokoCompiler().compile(lines[0]);
         Method main = getMainMethod(result.compiledClass().orElseThrow(() -> new RuntimeException("Unexpected compiler error: " + result.errors().get(0))));

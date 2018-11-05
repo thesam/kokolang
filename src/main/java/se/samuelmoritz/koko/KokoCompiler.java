@@ -30,70 +30,73 @@ public class KokoCompiler {
     }
 
     public CompilerResult compile(String input) {
+        input = input.split("#STDOUT:")[0];
+        ErrorHandler.errors = new ArrayList<>();
+        Context.reset();
+        KokoLexer lexer = new KokoLexer(new ANTLRInputStream(input));
+        CommonTokenStream tokens = new CommonTokenStream(lexer);
+        KokoParser parser = new KokoParser(tokens);
+        ParseTree tree = parser.prog();
+        ParseTreeWalker walker = new ParseTreeWalker();
+        boolean hasFunctionDeclaration = !((KokoParser.ProgContext) tree).functionDeclaration().isEmpty();
+        JavaGenerator javaGenerator = new JavaGenerator(hasFunctionDeclaration);
+        walker.walk(new ContextListener(), tree);
+        walker.walk(new SemanticChecker(), tree);
+        walker.walk(javaGenerator, tree);
+
+        if (ErrorHandler.errors.size() > 0) {
+            return new CompilerResult(null, ErrorHandler.errors);
+        }
+
+        compileToBytecode(javaGenerator.output, javaGenerator.className);
+        Class cls = loadClass(javaGenerator.className);
+
+        return new CompilerResult(cls, new ArrayList<>());
+    }
+
+    private Class loadClass(String className) {
         try {
-            input = input.split("#STDOUT:")[0];
-            ErrorHandler.errors = new ArrayList<>();
-            Context.reset();
-            KokoLexer lexer = new KokoLexer(new ANTLRInputStream(input));
-            CommonTokenStream tokens = new CommonTokenStream(lexer);
-            KokoParser parser = new KokoParser(tokens);
-            ParseTree tree = parser.prog();
-            ParseTreeWalker walker = new ParseTreeWalker();
-            boolean hasFunctionDeclaration = !((KokoParser.ProgContext) tree).functionDeclaration().isEmpty();
-            JavaGenerator javaGenerator = new JavaGenerator(hasFunctionDeclaration);
-            List<KokoListener> listeners = Arrays.asList(
-                    new ContextListener(),
-                    new SemanticChecker(),
-                    javaGenerator
-            );
-            for (KokoListener listener : listeners) {
-                walker.walk(listener, tree);
-                if (ErrorHandler.errors.size() > 0) {
-                    return new CompilerResult(null, ErrorHandler.errors);
-                }
-            }
-
-            compileToBytecode(javaGenerator.output);
-
-            // Create a File object on the root of the directory containing the class file
             File file = new File(".");
-
-            // Convert File to a URL
-            URL url = file.toURL();          // file:/c:/myclasses/
+            URL url = null;          // file:/c:/myclasses/
+            url = file.toURL();
             URL[] urls = new URL[]{url};
-
-            // Create a new class loader with the directory
             ClassLoader cl = new URLClassLoader(urls);
+            return cl.loadClass(className);
+        } catch (MalformedURLException | ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
-            // Load in the class; MyClass.class should be located in
-            // the directory file:/c:/myclasses/com/mycompany
-            Class cls = cl.loadClass("Main");
-            Files.delete(Paths.get("Main.java"));
-            //Files.delete(Paths.get("Main.class"));
-            return new CompilerResult(cls, new ArrayList<>());
-        } catch (MalformedURLException e) {
-            throw new RuntimeException(e);
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException(e);
+    private void compileToBytecode(String javaSource, String className) {
+        System.out.println(javaSource);
+        String javaFilename = className + ".java";
+        saveToJavaFile(javaSource, javaFilename);
+        compileToClassFile(javaFilename);
+        try {
+            Files.delete(Paths.get(javaFilename));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
-    private void compileToBytecode(String javaSource) {
-        System.out.println(javaSource);
-        try {
-            FileWriter fileWriter = new FileWriter("Main.java");
-            fileWriter.write(javaSource);
-            fileWriter.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        File[] files1 = {new File("Main.java")};
+    private void compileToClassFile(String filename) {
+        File[] files1 = {new File(filename)};
         JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
         StandardJavaFileManager fileManager = compiler.getStandardFileManager(null, null, null);
         Iterable<? extends JavaFileObject> compilationUnits1 = fileManager.getJavaFileObjectsFromFiles(Arrays.asList(files1));
         Boolean compilerResult = compiler.getTask(null, fileManager, null, null, null, compilationUnits1).call();
-        System.out.println(compilerResult);
+        if (!compilerResult) {
+            throw new RuntimeException("Java compilation failed!");
+        }
+    }
+
+    private void saveToJavaFile(String javaSource, String filename) {
+        try {
+            FileWriter fileWriter = new FileWriter(filename);
+            fileWriter.write(javaSource);
+            fileWriter.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

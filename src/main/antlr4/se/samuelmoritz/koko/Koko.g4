@@ -23,7 +23,7 @@ LEFT_PAREN: '(' ;
 INT_LITERAL: [0-9]+ ;
 STRING_LITERAL: '"' [A-Za-z]+ '"' ;
 RIGHT_PAREN: ')' ;
-NEWLINE: '\n' ;
+NEWLINE: '\n' | '\r\n' ;
 INDENT: '    ' ;
 SPACE: ' ' ;
 EQUALS: '==' ;

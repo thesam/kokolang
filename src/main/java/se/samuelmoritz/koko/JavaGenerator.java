@@ -4,6 +4,7 @@ public class JavaGenerator extends KokoBaseListener {
 
 	String output = "";
 	private final boolean hasFunctionDeclaration;
+	public final String className = "Main";
 
 	public JavaGenerator(boolean hasFunctionDeclaration) {
 		this.hasFunctionDeclaration = hasFunctionDeclaration;
