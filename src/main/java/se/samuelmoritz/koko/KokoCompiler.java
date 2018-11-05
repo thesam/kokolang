@@ -1,6 +1,6 @@
 package se.samuelmoritz.koko;
 
-import se.samuelmoritz.koko.support.Context;
+import se.samuelmoritz.koko.support.SymbolTable;
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
@@ -58,10 +58,10 @@ public class KokoCompiler {
     }
 
     private List<String> runSemanticChecking(ParseTree tree) {
-        Context.reset();
         ParseTreeWalker walker = new ParseTreeWalker();
-        walker.walk(new ContextListener(), tree);
-        SemanticChecker semanticChecker = new SemanticChecker();
+        SymbolTableCreator symbolTableCreator = new SymbolTableCreator();
+        walker.walk(symbolTableCreator, tree);
+        SemanticChecker semanticChecker = new SemanticChecker(symbolTableCreator.symbolTable);
         walker.walk(semanticChecker, tree);
         return semanticChecker.errors;
     }
