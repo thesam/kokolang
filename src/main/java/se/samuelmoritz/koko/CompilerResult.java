@@ -23,6 +23,10 @@ public class CompilerResult {
     }
 
     public static CompilerResult success(Class compiledClass) {
-        return new CompilerResult(compiledClass,new ArrayList<>());
+        return new CompilerResult(compiledClass, new ArrayList<>());
+    }
+
+    public static CompilerResult failed(List<String> errors) {
+        return new CompilerResult(null, errors);
     }
 }

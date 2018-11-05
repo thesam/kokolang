@@ -1,7 +1,6 @@
 package se.samuelmoritz.koko;
 
 import se.samuelmoritz.koko.support.Context;
-import se.samuelmoritz.koko.support.ErrorHandler;
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
@@ -37,11 +36,14 @@ public class KokoCompiler {
         KokoParser parser = new KokoParser(tokens);
         ParseTree parseTree = parser.prog();
 
-        runSemanticChecking(parseTree);
+        List<String> semanticErrors = runSemanticChecking(parseTree);
 
-        Class compiledClass = generateCode(parseTree);
-
-        return CompilerResult.success(compiledClass);
+        if (semanticErrors.isEmpty()) {
+            Class compiledClass = generateCode(parseTree);
+            return CompilerResult.success(compiledClass);
+        } else {
+            return CompilerResult.failed(semanticErrors);
+        }
     }
 
     private Class generateCode(ParseTree tree) {
@@ -55,11 +57,13 @@ public class KokoCompiler {
         return loadClass(javaGenerator.className);
     }
 
-    private void runSemanticChecking(ParseTree tree) {
+    private List<String> runSemanticChecking(ParseTree tree) {
         Context.reset();
         ParseTreeWalker walker = new ParseTreeWalker();
         walker.walk(new ContextListener(), tree);
-        walker.walk(new SemanticChecker(), tree);
+        SemanticChecker semanticChecker = new SemanticChecker();
+        walker.walk(semanticChecker, tree);
+        return semanticChecker.errors;
     }
 
     private Class loadClass(String className) {
