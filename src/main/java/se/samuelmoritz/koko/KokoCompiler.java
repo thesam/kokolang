@@ -24,6 +24,11 @@ import java.util.Arrays;
 import java.util.List;
 
 public class KokoCompiler {
+    public static void main(String[] args) throws IOException {
+        List<String> lines = Files.readAllLines(Paths.get(args[0]));
+        new KokoCompiler().compile(String.join("\n", lines));
+    }
+
     public CompilerResult compile(String input) {
         try {
             input = input.split("#STDOUT:")[0];
@@ -64,7 +69,7 @@ public class KokoCompiler {
             // the directory file:/c:/myclasses/com/mycompany
             Class cls = cl.loadClass("Main");
             Files.delete(Paths.get("Main.java"));
-            Files.delete(Paths.get("Main.class"));
+            //Files.delete(Paths.get("Main.class"));
             return new CompilerResult(cls, new ArrayList<>());
         } catch (MalformedURLException e) {
             throw new RuntimeException(e);
