@@ -30,24 +30,19 @@ public class KokoCompiler {
     }
 
     public CompilerResult compile(String input) {
-        input = input.split("#STDOUT:")[0];
-        ErrorHandler.errors = new ArrayList<>();
-        Context.reset();
+        input = removeComments(input);
 
         KokoLexer lexer = new KokoLexer(new ANTLRInputStream(input));
         CommonTokenStream tokens = new CommonTokenStream(lexer);
+
         KokoParser parser = new KokoParser(tokens);
+        ParseTree parseTree = parser.prog();
 
-        ParseTree tree = parser.prog();
-        runSemanticChecking(tree);
+        runSemanticChecking(parseTree);
 
-        if (ErrorHandler.errors.size() > 0) {
-            return new CompilerResult(null, ErrorHandler.errors);
-        }
+        Class compiledClass = generateCode(parseTree);
 
-        Class cls = generateCode(tree);
-
-        return new CompilerResult(cls, new ArrayList<>());
+        return new CompilerResult(compiledClass, new ArrayList<>());
     }
 
     private Class generateCode(ParseTree tree) {
@@ -62,6 +57,7 @@ public class KokoCompiler {
     }
 
     private void runSemanticChecking(ParseTree tree) {
+        Context.reset();
         ParseTreeWalker walker = new ParseTreeWalker();
         walker.walk(new ContextListener(), tree);
         walker.walk(new SemanticChecker(), tree);
@@ -111,5 +107,10 @@ public class KokoCompiler {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private String removeComments(String input) {
+        input = input.split("#STDOUT:")[0];
+        return input;
     }
 }
