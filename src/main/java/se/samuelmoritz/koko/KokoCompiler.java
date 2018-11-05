@@ -19,7 +19,6 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -29,10 +28,10 @@ public class KokoCompiler {
         new KokoCompiler().compile(String.join("\n", lines));
     }
 
-    public CompilerResult compile(String input) {
-        input = removeComments(input);
+    CompilerResult compile(String sourceCode) {
+        String lexerInput = removeComments(sourceCode);
 
-        KokoLexer lexer = new KokoLexer(new ANTLRInputStream(input));
+        KokoLexer lexer = new KokoLexer(new ANTLRInputStream(lexerInput));
         CommonTokenStream tokens = new CommonTokenStream(lexer);
 
         KokoParser parser = new KokoParser(tokens);
@@ -42,7 +41,7 @@ public class KokoCompiler {
 
         Class compiledClass = generateCode(parseTree);
 
-        return new CompilerResult(compiledClass, new ArrayList<>());
+        return CompilerResult.success(compiledClass);
     }
 
     private Class generateCode(ParseTree tree) {
