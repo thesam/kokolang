@@ -33,25 +33,38 @@ public class KokoCompiler {
         input = input.split("#STDOUT:")[0];
         ErrorHandler.errors = new ArrayList<>();
         Context.reset();
+
         KokoLexer lexer = new KokoLexer(new ANTLRInputStream(input));
         CommonTokenStream tokens = new CommonTokenStream(lexer);
         KokoParser parser = new KokoParser(tokens);
+
         ParseTree tree = parser.prog();
-        ParseTreeWalker walker = new ParseTreeWalker();
-        boolean hasFunctionDeclaration = !((KokoParser.ProgContext) tree).functionDeclaration().isEmpty();
-        JavaGenerator javaGenerator = new JavaGenerator(hasFunctionDeclaration);
-        walker.walk(new ContextListener(), tree);
-        walker.walk(new SemanticChecker(), tree);
-        walker.walk(javaGenerator, tree);
+        runSemanticChecking(tree);
 
         if (ErrorHandler.errors.size() > 0) {
             return new CompilerResult(null, ErrorHandler.errors);
         }
 
-        compileToBytecode(javaGenerator.output, javaGenerator.className);
-        Class cls = loadClass(javaGenerator.className);
+        Class cls = generateCode(tree);
 
         return new CompilerResult(cls, new ArrayList<>());
+    }
+
+    private Class generateCode(ParseTree tree) {
+        ParseTreeWalker walker = new ParseTreeWalker();
+        boolean hasFunctionDeclaration = !((KokoParser.ProgContext) tree).functionDeclaration().isEmpty();
+
+        JavaGenerator javaGenerator = new JavaGenerator(hasFunctionDeclaration);
+        walker.walk(javaGenerator, tree);
+
+        compileToBytecode(javaGenerator.output, javaGenerator.className);
+        return loadClass(javaGenerator.className);
+    }
+
+    private void runSemanticChecking(ParseTree tree) {
+        ParseTreeWalker walker = new ParseTreeWalker();
+        walker.walk(new ContextListener(), tree);
+        walker.walk(new SemanticChecker(), tree);
     }
 
     private Class loadClass(String className) {
