@@ -113,7 +113,7 @@ public class KokoCompiler {
     }
 
     private String removeComments(String input) {
-        input = input.split("#STDOUT:")[0];
+        input = input.split("#")[0];
         return input;
     }
 }
