@@ -1,4 +1,3 @@
-println(0)
 println(1)
 println(2)
 println("Fizz")
@@ -15,7 +14,6 @@ println(13)
 println(14)
 println("FizzBuzz")
 #STDOUT:
-0
 1
 2
 Fizz

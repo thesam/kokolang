@@ -27,7 +27,6 @@ void fizzbuzz(int input)
     ret
 
 void main()
-    fizzbuzz(0)
     fizzbuzz(1)
     fizzbuzz(2)
     fizzbuzz(3)
@@ -46,7 +45,6 @@ void main()
     ret
 
 #STDOUT:
-0
 1
 2
 Fizz
