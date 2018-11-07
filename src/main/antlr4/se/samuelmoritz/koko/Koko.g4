@@ -9,7 +9,7 @@ functionBody: (INDENT (ifStatement | functionCall |returnStatement) NEWLINE)*;
 ifStatement: IF SPACE LEFT_PAREN boolExpr RIGHT_PAREN NEWLINE ifBody ;
 boolExpr: IDENTIFIER SPACE EQUALS SPACE INT_LITERAL ;
 ifBody: (INDENT INDENT (functionCall | returnStatement) NEWLINE?)* ;
-functionCall: IDENTIFIER LEFT_PAREN functionArg RIGHT_PAREN;
+functionCall: IDENTIFIER LEFT_PAREN functionArg? RIGHT_PAREN;
 functionArg: INT_LITERAL | STRING_LITERAL | IDENTIFIER ;
 returnStatement: RETURN ;
 
@@ -21,7 +21,7 @@ INT_TYPE: 'int' ;
 IDENTIFIER: [a-z]+ ;
 LEFT_PAREN: '(' ;
 INT_LITERAL: [0-9]+ ;
-STRING_LITERAL: '"' [A-Za-z]+ '"' ;
+STRING_LITERAL: '"' [A-Za-z ,!]+ '"' ;
 RIGHT_PAREN: ')' ;
 NEWLINE: '\n' | '\r\n' ;
 INDENT: '    ' ;
