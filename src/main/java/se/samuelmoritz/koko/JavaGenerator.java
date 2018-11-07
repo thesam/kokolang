@@ -80,11 +80,6 @@ public class JavaGenerator extends KokoBaseListener {
 	}
 
 	@Override
-	public void exitIfStatement(KokoParser.IfStatementContext ctx) {
-		super.exitIfStatement(ctx);
-	}
-
-	@Override
 	public void enterIfBody(KokoParser.IfBodyContext ctx) {
 		add(") {");
 	}

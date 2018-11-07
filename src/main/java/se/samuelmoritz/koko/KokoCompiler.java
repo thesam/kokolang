@@ -80,7 +80,7 @@ public class KokoCompiler {
     }
 
     private void compileToBytecode(String javaSource, String className) {
-        System.out.println(javaSource);
+        //System.out.println(javaSource);
         String javaFilename = className + ".java";
         saveToJavaFile(javaSource, javaFilename);
         compileToClassFile(javaFilename);
