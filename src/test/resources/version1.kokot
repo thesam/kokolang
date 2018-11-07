@@ -14,9 +14,6 @@ void fizzbuzz(int input)
     if (input == 10)
         println("Buzz")
         ret
-    if (input == 10)
-        println("Buzz")
-        ret
     if (input == 12)
         println("Fizz")
         ret
