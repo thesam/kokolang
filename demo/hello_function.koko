@@ -1,0 +1,7 @@
+void greet()
+    println("Hello, world!")
+    ret
+
+void main()
+    greet()
+
