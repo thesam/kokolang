@@ -7,7 +7,8 @@ functionHeader: VOID_TYPE SPACE IDENTIFIER LEFT_PAREN functionParameter? RIGHT_P
 functionParameter: INT_TYPE SPACE IDENTIFIER ;
 functionBody: (INDENT (ifStatement | functionCall |returnStatement) NEWLINE)*;
 ifStatement: IF SPACE LEFT_PAREN boolExpr RIGHT_PAREN NEWLINE ifBody ;
-boolExpr: IDENTIFIER SPACE EQUALS SPACE INT_LITERAL ;
+boolExpr: (IDENTIFIER|modExpr) SPACE EQUALS SPACE INT_LITERAL ;
+modExpr: IDENTIFIER SPACE MOD SPACE INT_LITERAL ;
 ifBody: (INDENT INDENT (functionCall | returnStatement) NEWLINE?)* ;
 functionCall: IDENTIFIER LEFT_PAREN functionArg? RIGHT_PAREN;
 functionArg: INT_LITERAL | STRING_LITERAL | IDENTIFIER ;
@@ -27,3 +28,4 @@ NEWLINE: '\n' | '\r\n' ;
 INDENT: '    ' ;
 SPACE: ' ' ;
 EQUALS: '==' ;
+MOD: '%' ;
