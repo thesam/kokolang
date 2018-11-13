@@ -1,0 +1,11 @@
+void main()
+    if (true)
+        println("true0")
+        if (true)
+            println("true1")
+            if (true)
+                println("true2")
+#STDOUT:
+true0
+true1
+true2
