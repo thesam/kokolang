@@ -1,0 +1,7 @@
+println([])
+println([0])
+println([0 1])
+#STDOUT:
+[]
+[0]
+[0, 1]

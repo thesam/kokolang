@@ -33,7 +33,8 @@ boolExpr: (IDENTIFIER|modExpr) SPACE EQUALS SPACE INT_LITERAL | TRUE ;
 modExpr: IDENTIFIER SPACE MOD SPACE INT_LITERAL ;
 ifBody: (INDENT_INC (functionCall | returnStatement | ifStatement)+ INDENT_DEC) ;
 functionCall: IDENTIFIER LEFT_PAREN functionArg? RIGHT_PAREN NEWLINE;
-functionArg: INT_LITERAL | STRING_LITERAL | IDENTIFIER ;
+functionArg: INT_LITERAL | STRING_LITERAL | IDENTIFIER | listLiteral ;
+listLiteral: LEFT_BRACKET INT_LITERAL? (SPACE INT_LITERAL)* RIGHT_BRACKET ;
 returnStatement: RETURN ;
 
 // Lexer rules
@@ -51,3 +52,5 @@ NEWLINE: ('\n' | '\r\n') '    '* { this.onNewline(); } ;
 SPACE: ' ' ;
 EQUALS: '==' ;
 MOD: '%' ;
+LEFT_BRACKET: '[' ;
+RIGHT_BRACKET: ']' ;

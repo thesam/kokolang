@@ -1,5 +1,7 @@
 package se.samuelmoritz.koko;
 
+import java.util.stream.Collectors;
+
 public class JavaGenerator extends KokoBaseListener {
 
 	String output = "";
@@ -46,8 +48,13 @@ public class JavaGenerator extends KokoBaseListener {
 			add(ctx.INT_LITERAL().getText());
 		} else if (ctx.STRING_LITERAL() != null) {
 			add(ctx.STRING_LITERAL().getText());
-		} else {
+		} else if (ctx.IDENTIFIER() != null) {
 			add(ctx.IDENTIFIER().getText());
+		} else if (ctx.listLiteral() != null) {
+			// Ignore
+		}
+		else {
+			throw new RuntimeException("Compiler error: Unknown function arg");
 		}
 	}
 
@@ -97,6 +104,15 @@ public class JavaGenerator extends KokoBaseListener {
 	@Override
 	public void enterReturnStatement(KokoParser.ReturnStatementContext ctx) {
 		add("return;");
+	}
+
+	@Override
+	public void enterListLiteral(KokoParser.ListLiteralContext ctx) {
+		add("Arrays.asList(");
+		String argList = ctx.INT_LITERAL().stream().map(i -> "" + i).collect(Collectors.joining(","));
+		add(argList);
+		add(")");
+		output = "import java.util.Arrays;" + output;
 	}
 
 	private void add(String input) {
